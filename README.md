@@ -51,6 +51,7 @@ SELECT
 FROM 
     May2015
 GROUP BY author, subreddit
+ORDER BY author, count(*) DESC
 ```
 
 output example:
