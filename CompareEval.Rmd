@@ -1,0 +1,29 @@
+---
+title: "Compare Evaluation"
+author: "renaud"
+date: "December 28, 2015"
+output: html_document
+---
+
+1. Choose the 2 evaluation you want to comnpare
+
+```{r}
+eval1 = read.csv('evaluationsL1000.csv')
+eval2 = read.csv('evaluationsL10000.csv')
+```
+
+2. look at the summary of each evaluation
+
+```{r}
+summary(eval1)
+summary(eval2)
+```
+
+3. compare boxplot
+
+```{r}
+for(colname in colnames(eval1)) {
+  print(colname)
+  boxplot(unlist(eval1[,colname]), unlist(eval2[colname]), horizontal=TRUE)
+} 
+```

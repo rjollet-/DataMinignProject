@@ -78,7 +78,6 @@ def getRecommendations(prefs,person,similarity=sim_pearson):
 
 
 utilityMatrix = retro_dictify(pd.read_csv('UtilityMatrix.csv'))
-print(utilityMatrix)
 test = retro_dictify(pd.read_csv('testData.csv'))
 y = retro_dictify(pd.read_csv('yData.csv'))
 
@@ -91,15 +90,22 @@ for author in test:
 
     recomandations = getRecommendations(utilityMatrix,author,similarity=sim_pearson)
 
-    precision = 0
-    recall = 0
-    F1 = 0
-    RMSE = 0
-    MAE = 0
-    ARHR = 0
-    err = []
+    if not recomandations: 
+        precision = None
+        recall = None
+        F1 = None
+        RMSE = None
+        MAE = None
+        ARHR = None
 
-    if recomandations:
+    else:
+        precision = 0
+        recall = 0
+        F1 = 0
+        RMSE = 0
+        MAE = 0
+        ARHR = 0
+        err = []
         for rank in range(0,len(recomandations)):
             if recomandations[rank][1] in y[author].keys():
                 err.append(recomandations[rank][0] - y[author][recomandations[rank][1]])
