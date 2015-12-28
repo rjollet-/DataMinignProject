@@ -82,7 +82,7 @@ print(utilityMatrix)
 test = retro_dictify(pd.read_csv('testData.csv'))
 y = retro_dictify(pd.read_csv('yData.csv'))
 
-columns=('precision', 'recall', 'RMSE', 'MAE', 'ARHR')
+columns=('precision', 'recall','F1', 'RMSE', 'MAE', 'ARHR')
 i = 0
 evaluations = pd.DataFrame(columns=columns)
 
@@ -93,6 +93,7 @@ for author in test:
 
     precision = 0
     recall = 0
+    F1 = 0
     RMSE = 0
     MAE = 0
     ARHR = 0
@@ -101,17 +102,17 @@ for author in test:
     if recomandations:
         for rank in range(0,len(recomandations)):
             if recomandations[rank][1] in y[author].keys():
-                print('HIT')
                 err.append(recomandations[rank][0] - y[author][recomandations[rank][1]])
                 ARHR += 1/(rank+1)
                 
         precision = len(err) / len(recomandations)
-        recall = len(err) / len(y)
+        recall = len(err) / len(y[author])
+        F1 = (2*precision*recall) / (precision+recall) if precision+recall>0 else 0
         RMSE = pow(np.mean([pow(x,2) for x in err]),.5) if err else 0 
-        MAE = pow(np.mean([abs(x) for x in err]),.5) if err else 0 
+        MAE = np.mean([abs(x) for x in err]) if err else 0 
         ARHR = ARHR/len(err) if err else 0 
     
-    evaluations.loc[i] = [precision, recall, RMSE, MAE, ARHR]
+    evaluations.loc[i] = [precision, recall,F1, RMSE, MAE, ARHR]
     i += 1
     del utilityMatrix[author]
 
