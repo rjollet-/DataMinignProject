@@ -3,6 +3,9 @@ import random
 import pandas as pd
 from math import sqrt
 
+# to run on Kaggle
+sql_conn = sqlite3.connect('../input/database.sqlite')
+# to run localy
 sql_conn = sqlite3.connect('database.sqlite')
 
 df = pd.read_sql("""
@@ -20,12 +23,15 @@ df = pd.read_sql("""
             GROUP BY author
             HAVING count(DISTINCT subreddit)  > 4
             AND count(DISTINCT parent_id) < 3000
-            LIMIT 1000)
+            LIMIT 1000
+            OFFSET ABS(RANDOM()) % 20)
     GROUP BY author, subreddit""", sql_conn)
 
 test = []
 y = []
+authorsTest = []
 for author, subs in df.groupby('author'):
+    authorsTest.append(author)
     testSize = int(sqrt(len(subs)))
     rows = random.sample(range(0,len(subs)), testSize)
     i = 0
@@ -41,3 +47,4 @@ dfY = pd.DataFrame(y, columns=columns)
 
 dfTest.to_csv('testData.csv', encoding='utf-8', index=False)
 dfY.to_csv('yData.csv', encoding='utf-8', index=False)
+print(authorsTest)
